@@ -3,7 +3,7 @@
 totalcomparisons = 0
 
 c1 = 1
-c2 = 10
+c2 = 12
 
 # new params
 totresults = []
@@ -17,11 +17,18 @@ continuedmatching = 0 # continues erroneously
 clustering_error = 0 
 
 #####
-initialframe = 300
-endframe = 380
+initialframe = 410
+endframe = 500
 
+unew = map10[initialframe]
 
-for initialcluster in range(c1, c2+1):
+ca = list(range(c1, c2+1))
+#unew = [1]
+carray = np.setdiff1d(ca, unew)
+
+print("carray :", carray)
+
+for initialcluster in ca:#range(c1, c2+1):
     
     
     arrayx = []
@@ -360,6 +367,21 @@ for initialcluster in range(c1, c2+1):
 
                 finalx.append(avx)
                 finaly.append(avy)
+            
+            if i % 10==0:
+                print("(map10) i is", i)
+                print("(map10) key is", ky)
+                m10 = map10[i]
+                m10.append(ky)
+                # check sim clusts
+                v1 = errorclusters.get(i)
+                if v1!=None:
+                    errorarray= errorclusters[i]
+                    for el in errorarray:
+                        for e in el:
+                            if e == ky:
+                                m10.extend(el)
+                map10[i] = m10
 
             #print("final x", finalx)
             #print("final y", finaly)
