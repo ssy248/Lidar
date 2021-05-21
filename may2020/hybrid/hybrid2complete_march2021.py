@@ -78,7 +78,10 @@ for initialcluster in range(c1, c2+1):
         # clear matchfreq
         for j in range(0, mx):
             matchfreq[j] =0
-
+            
+        xvalues=[] ##RESET
+        yvalues=[]
+        
         currentmap3 = {} # average coordinates
 
         print("curr frame is:", i)
@@ -182,8 +185,7 @@ for initialcluster in range(c1, c2+1):
             avecurrenty = np.mean(yvalues)
             currentmap3[numo2] = [avecurrentx, avecurrenty]
             totalmap[numo2] = currentmap
-            xvalues=[] ##RESET
-            yvalues=[]
+            
             if matchfreq[numo2] > f:
                 ky = numo2
                 hxvalues = xvalues
