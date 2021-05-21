@@ -62,6 +62,9 @@ for i in range(initialframe, endframe+1):
     # clear matchfreq
     for j in range(0, mx):
         matchfreq[j] =0
+        
+    xvalues=[]
+    yvalues=[]
 
     currentmap3 = {} # average coordinates
 
@@ -73,6 +76,8 @@ for i in range(initialframe, endframe+1):
         # reset hxvalues , hyvalues
         hxvalues = []
         hyvalues=[]
+        
+       
 
         obnum=1 
 
@@ -166,8 +171,7 @@ for i in range(initialframe, endframe+1):
         avecurrenty = np.mean(yvalues)
         currentmap3[numo2] = [avecurrentx, avecurrenty]
         totalmap[numo2] = currentmap
-        xvalues=[] ##RESET
-        yvalues=[]
+        
         if matchfreq[numo2] > f:
             ky = numo2
             hxvalues = xvalues
