@@ -1,4 +1,5 @@
 # single starting cluster, fixed angles calculations, aggregated angle, 360 - agg. angle,  <= 35
+# May 24, 2021 : fixed short trajectory end problem for starting frame 80 and init. cluster 7
 
 # single out a single starting cluster and frame
 
