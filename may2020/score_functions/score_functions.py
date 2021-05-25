@@ -25,7 +25,7 @@ def sphere_score(i, r): # r is the array of all values
     sqsum =0
     ri = r[i]
     for el in r:
-        sqsum=sqsum+np.pow(el, 2)
+        sqsum=sqsum+np.power(el, 2)
     den = np.sqrt(sqsum)
     return( float(ri/den))
     
