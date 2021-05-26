@@ -2,7 +2,7 @@
 # update the score function to be quadratic and consider highest 80 percent of scores
 # usual method to keep track of currentmap and previous map (values are 1 or 0 )
 
-# single out a single starting cluster and frame
+# same as above but with score function
 
 
 initialcluster=7
@@ -100,8 +100,14 @@ for i in range(initialframe, endframe+1):
                     xr = round(xpoint)
                     yr = round(ypoint)
                     fromi = dinvlookupdict[(xr,yr)]
-                    h1, i1 = dhighestfreq(fromi)
-                    #i1 = newhighestfreq(fromi)
+                    h1, i1 = highest80_quad(fromi) # May 26
+                    # save to map
+                    hind=0
+                    for ind1 in i1:
+                        currentmap[ind1] = 1
+                        currentmapscore[ind1] = h1[hind]
+                        hind=hind+1
+                        
                     prevmap[i1] = 1
 
             plt.scatter(arrayx, arrayy)
@@ -141,6 +147,7 @@ for i in range(initialframe, endframe+1):
                     
                 obnum= clusterid
                 currentmap={}
+                currentmapscore={}
                 # take the average
                 avecurrentx = np.mean(xvalues)
                 avecurrenty = np.mean(yvalues)
@@ -169,9 +176,13 @@ for i in range(initialframe, endframe+1):
             yvalues.append(ypoint)
             fromi = dinvlookupdict[(xr,yr)]
             # function to find highest freq 
-            h1, i1 = dhighestfreq(fromi)
+            h1, i1 = highest80_quad(fromi) 
             # save to map
-            currentmap[i1] = 1
+            hind=0
+            for ind1 in i1:
+                currentmap[ind1]=1
+                currentmapscore[ind1] = h1[hind]
+                hind=hind+1
             # check prev map
             val = prevmap.get(fromi)
             if val == None:
@@ -408,4 +419,3 @@ for i in range(initialframe, initialframe+alen):
         break
 
 plt.show()
-    
