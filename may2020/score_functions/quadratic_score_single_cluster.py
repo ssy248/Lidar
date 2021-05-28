@@ -2,6 +2,8 @@
 # update the score function to be quadratic and consider highest 80 percent of scores
 # usual method to keep track of currentmap and previous map (values are 1 or 0 )
 
+# May 28 : fix small bugs
+
 # same as above but with score function
 
 
@@ -24,6 +26,7 @@ obnum = 1
 totalmap ={}
 
 prevmap = {}
+prevmapscore={}
 
 mf = defaultdict(list)
 # maximum object/cluster id in any frame
@@ -56,7 +59,7 @@ angles = []
 rvals=[]
 
 for i in range(initialframe, endframe+1):
-    name = "file_out"
+    name = "file_out/file_out"
     name = name+str(i)
     name = name+".csv"
     firstrow=0
@@ -104,11 +107,11 @@ for i in range(initialframe, endframe+1):
                     # save to map
                     hind=0
                     for ind1 in i1:
-                        currentmap[ind1] = 1
-                        currentmapscore[ind1] = h1[hind]
+                        prevmap[ind1] = 1
+                        prevmapscore[ind1] = h1[hind]
                         hind=hind+1
                         
-                    prevmap[i1] = 1
+                    #prevmap[i1] = 1
 
             plt.scatter(arrayx, arrayy)
 
@@ -382,7 +385,7 @@ ay =[]
 
 acounter=0
 for i in range(initialframe, initialframe+alen):
-    name = "file_out"
+    name = "file_out/file_out"
     name = name+str(i)
     name = name+".csv"
 
