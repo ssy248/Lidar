@@ -1,10 +1,10 @@
 # same as above but with score function: single cluster run
 # June 5: change to include the quad score plus normalization by x - mu / std dev
-# can be normalized or unnormalized
+# June 8: change ang_diff_agg to ang_diff (when checking < 35) and change diff_tot bound to 5 (from 10)
 
-initialcluster=3
-initialframe=200
-endframe=215
+initialcluster=7
+initialframe=80
+endframe=180
 
 
 arrayx = []
@@ -98,13 +98,16 @@ for i in range(initialframe, endframe+1):
                     xr = round(xpoint)
                     yr = round(ypoint)
                     fromi = dinvlookupdict[(xr,yr)]
-                    h1, i1 = highest80_quad(fromi) # May 26 # highest80_quad_norm
+                    #h1, i1 = highest80_sphere(fromi)
+                    h1, i1 = dhighestfreq(fromi)
+                    #h1, i1 = highest80_quad_norm(fromi) # May 26 # highest80_quad_norm or highest80_quad
                     # save to map
-                    hind=0
+                    prevmap[i1] = h1
+                    """hind=0
                     for ind1 in i1:
                         prevmap[ind1] = 1
                         prevmapscore[ind1] = h1[hind]
-                        hind=hind+1
+                        hind=hind+1"""
                         
                     #prevmap[i1] = 1
 
@@ -174,13 +177,16 @@ for i in range(initialframe, endframe+1):
             yvalues.append(ypoint)
             fromi = dinvlookupdict[(xr,yr)]
             # function to find highest freq 
-            h1, i1 = highest80_quad(fromi)  # highest80_quad_norm
+            #h1, i1 = highest80_sphere(fromi)
+            h1, i1 = dhighestfreq(fromi)
+            #h1, i1 = highest80_quad_norm(fromi)  # highest80_quad_norm or highest80_quad
+            currentmap[i1] = h1
             # save to map
-            hind=0
+            """hind=0
             for ind1 in i1:
                 currentmap[ind1]=1
                 currentmapscore[ind1] = h1[hind]
-                hind=hind+1
+                hind=hind+1"""
             # check prev map
             val = prevmap.get(fromi)
             if val == None:
@@ -331,7 +337,7 @@ for i in range(initialframe, endframe+1):
 
                 print("diff_tot is", diff_tot)
 
-                if diff_tot < 10:
+                if diff_tot < 5:
                     print("diff tot small, do not chec3k angles")
                     # set the rest of the params
                     prevmap= totalmap[minclust]
@@ -342,7 +348,7 @@ for i in range(initialframe, endframe+1):
                     finaly.append(mcy)
                     angles.append(ang)
                 else:
-                    if ang_diff_agg <= 35 or ang_diff_360 <=35: # change from ang_diff, change from 45 to 30
+                    if ang_diff <= 35 or ang_diff_360 <=35: # change from ang_diff_agg, change from 45 to 30
                         print("angle holds")
                         prevmap= totalmap[minclust]
                         avx = mcx
@@ -423,8 +429,8 @@ for i in range(initialframe, initialframe+alen):
         avy = np.mean(yarray)
         plt.annotate(i, (avx, avy), textcoords="offset points", xytext=(0,10), ha='center')
         
-        print("avx is for frame", i, "is:", avx)
-        print("avy is for frame ", i, "is:", avy)
+        #print("avx is for frame", i, "is:", avx)
+        #print("avy is for frame ", i, "is:", avy)
 
         ax.append(avx)
         ay.append(avy)
