@@ -1,6 +1,14 @@
 # Complete from correct version (jun 8)
 
+# june 16 add saving arrays
+
+arrayx_map = {}
+arrayy_map = {}
+
 for initialcluster in range(c1, c2+1):    
+    
+    xarr =[]
+    yarr= []  
     arrayx = []
     arrayy = []
     pavex = []
@@ -419,6 +427,8 @@ for initialcluster in range(c1, c2+1):
 
             # plot
             plt.scatter(xarray,yarray)
+            xarr.extend(xarray)
+            yarr.extend(yarray)
             avx = np.mean(xarray)
             avy = np.mean(yarray)
             plt.annotate(i, (avx, avy), textcoords="offset points", xytext=(0,10), ha='center')
@@ -434,3 +444,5 @@ for initialcluster in range(c1, c2+1):
             break
 
     plt.show()
+    arrayx_map[initialcluster] = xarr
+    arrayy_map[initialcluster] = yarr
