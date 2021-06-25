@@ -1,11 +1,15 @@
-# In progress
+## June 23: 0.2, 0.3, 0.5 maps add
+# Only 0.2 seconds so far
 
-# Complete from correct version (jun 8)
-
+# Complete from correct version 
 # june 16 add saving arrays
 
 arrayx_map = {}
 arrayy_map = {}
+
+
+initialframe=400
+endframe=590
 
 c1= 1
 c2= 6
@@ -126,13 +130,13 @@ for initialcluster in range(c1, c2+1):
                             prevmapscore[ind1] = h1[hind]
                             hind=hind+1"""
                         # pooling
-                        pv = poolmap.get(i1)
+                        """pv = poolmap.get(i1)
                         if i1==None:
                             # set count as 1 
                             poolmap[i1]=1
                         else:
-                            pc=pv
-                            poolmap[i1] = pc+1
+                            pc=float(pv)
+                            poolmap[i1] = pc+1"""
 
                         #prevmap[i1] = 1
 
@@ -206,8 +210,25 @@ for initialcluster in range(c1, c2+1):
                 if goforward >0:
                     # check
                     if goforward==1: # trajcount2
-                        hi_index = highestfreq2(fromi)
-                        currentmap[hi_index] = 1 # or look up the value
+                        # fromi is the previous fromi
+                        toi_current = fromi 
+                        
+                        # look from prevmap
+                        for f in fromlist:
+                            hi_index = highestfreq2(fromi)
+                            
+                            (hx, hy) = dlookupdict[hi_index]
+                            
+                            if hx == xr and hy == yr:
+                                # increment
+                                print(" 0.2 sec next found")
+                                
+                                numo = float(obnum)
+                                matchfreq[numo] = matchfreq[numo]+1
+                                # check: break statement?
+                                break
+                                
+                            #currentmap[hi_index] = 1 # or look up the value
                         
                         continue
                     
@@ -218,37 +239,37 @@ for initialcluster in range(c1, c2+1):
                         hi_index = highestfreq5(fromi)
                 else:
                 
-                # function to find highest freq 
-                #h1, i1 = highest80_sphere(fromi)
-                h1, i1 = dhighestfreq(fromi)
-                #h1, i1 = highest80_quad_norm(fromi)  # highest80_quad_norm or highest80_quad
-                currentmap[i1] = h1
+                    # function to find highest freq 
+                    #h1, i1 = highest80_sphere(fromi)
+                    h1, i1 = dhighestfreq(fromi)
+                    #h1, i1 = highest80_quad_norm(fromi)  # highest80_quad_norm or highest80_quad
+                    currentmap[i1] = h1
                 
-                # pooling
-                pv = poolmap.get(i1)
-                if i1==None:
-                    # set count as 1 
-                    poolmap[i1]=1
-                else:
-                    pc=pv
-                    poolmap[i1] = pc+1
+                    # pooling
+                    """pv = poolmap.get(i1)
+                    if i1==None:
+                        # set count as 1 
+                        poolmap[i1]=1
+                    else:
+                        pc=float(pv)
+                        poolmap[i1] = pc+1"""
                 
-                # save to map
-                """hind=0
-                for ind1 in i1:
-                    currentmap[ind1]=1
-                    currentmapscore[ind1] = h1[hind]
-                    hind=hind+1"""
-                # check prev map
-                val = prevmap.get(fromi)
-                # pool : poolmap
-                poolval = prevpoolmap.get(fromi) # June 16
-                # set the weights 
-                if val == None:
-                    pass
-                else:
-                    numo = float(obnum)
-                    matchfreq[numo] = matchfreq[numo]+1
+                    # save to map
+                    """hind=0
+                    for ind1 in i1:
+                        currentmap[ind1]=1
+                        currentmapscore[ind1] = h1[hind]
+                        hind=hind+1"""
+                    # check prev map
+                    val = prevmap.get(fromi)
+                    # pool : poolmap
+                    poolval = prevpoolmap.get(fromi) # June 16
+                    # set the weights 
+                    if val == None:
+                        pass
+                    else:
+                        numo = float(obnum)
+                        matchfreq[numo] = matchfreq[numo]+1
             numo2 = float(clusterid)
             avecurrentx = np.mean(xvalues) ##USE AS CURRENT X
             avecurrenty = np.mean(yvalues)
@@ -419,28 +440,36 @@ for initialcluster in range(c1, c2+1):
                             #append to angles
                             angles.append(ang)
                         else:
-                            print("angles too large, stop")
+                            print("angles too large, stop unless goforward")
                             
                             if nogoforward ==1:
                                 break
                             # June 21, analyze the 2,3, or 5 frames in the future
                             if goforward==0:
                                 goforward=1 # skip to 2 
-                            if goforward==1:
-                                goforward=2
+                                # save the fromi's
+                                #prevmap -> list of fromi's 
+                                fromlist =[]
+                                for k in prevmap:
+                                    fromlist.append(k)
+                            """if goforward==1:
+                                goforward=2"""
                                 
                             
                             #break
                 else:
-                    print("not found and end, after last frame", i)
+                    print("not found and end unless goforward, after last frame", i)
                     # June 21 analyze 2,3,5 frames in future
                     if nogoforward==1:
                         break
                     
                     if goforward==0:
                         goforward=1
-                    if goforward==1:
-                        goforward=2
+                        fromlist =[]
+                        for k in prevmap:
+                            fromlist.append(k)
+                    """if goforward==1:
+                        goforward=2"""
                     
                     #break
             if len(hxvalues) !=0:
@@ -466,7 +495,7 @@ for initialcluster in range(c1, c2+1):
                 finalx.append(avx)
                 finaly.append(avy)
                 
-            if i % 5==0: # June 16 add map5
+            """if i % 5==0: # June 16 add map5
                 #print("(map10) i is", i)
                 #print("(map10) key is", ky)
                 m5 = map5[i]
@@ -479,7 +508,7 @@ for initialcluster in range(c1, c2+1):
                         for e in el:
                             if e == ky:
                                 m5.extend(el)
-                map5[i] = m5
+                map5[i] = m5"""
 
     alen = len(finalarray)
     print("length of array ", alen)
