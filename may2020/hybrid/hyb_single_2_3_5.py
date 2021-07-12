@@ -1,8 +1,12 @@
 # June 27 : test one starting cluster (at a time) : 0.5 sec map
 
-initialcluster = 1
-initialframe=10
-endframe=110
+# July 5: track whether finalarray is from normal method or skipping method
+# check if going back to normal method works
+# add 0.4 sec map 
+
+initialcluster = 4#1
+initialframe= 20#30
+endframe=120
 
 xarr =[]
 yarr= []  
@@ -60,9 +64,10 @@ nogoforward=0
 reset_goforward=0 # June 28 
 
 first5 = 1 # if first did not test for 0.5 sec
-found5 =0 # if found the 0.5 next 
-found2 =0
-found3=0
+found5 =1 # if found the 0.5 next 
+found2 =1
+found3=1
+found4=1
 
 for i in range(initialframe, endframe+1):
     name = "file_out/file_out"
@@ -84,25 +89,6 @@ for i in range(initialframe, endframe+1):
     if reset_goforward==1:
         reset_goforward=0
         goforward=0 
-
-    # go forward : skip frame(s)
-    if goforward==1:
-        goforward=2
-        #print("skip")
-        finalarray.append(0)
-        #continue
-
-    if goforward==2:
-        goforward=3
-        #print("skip")
-        finalarray.append(0)
-        #continue
-
-    if goforward==3:
-        goforward=4 
-        #print("skip")
-        finalarray.append(0)
-        continue
 
 
     with open(name) as csv_file:
@@ -133,10 +119,15 @@ for i in range(initialframe, endframe+1):
                     yr = round(ypoint)
                     fromi = dinvlookupdict[(xr,yr)]
                     #h1, i1 = highest80_sphere(fromi)
-                    h1, i1 = dhighestfreq(fromi)
-                    #h1, i1 = highest80_quad_norm(fromi) # May 26 # highest80_quad_norm or highest80_quad
-                    # save to map
-                    prevmap[i1] = h1
+                    # july 9 : check if none
+                    list1 = trajcount1.get(fromi) # list of maps
+                    if list5 ==None:
+                        pass
+                    else:
+                        i1 = highestfreq1(fromi) #h1, i1 = dhighestfreq(fromi)
+                        #h1, i1 = highest80_quad_norm(fromi) # May 26 # highest80_quad_norm or highest80_quad
+                        # save to map
+                        prevmap[i1] = 1 # h1
                     """hind=0
                     for ind1 in i1:
                         prevmap[ind1] = 1
@@ -227,8 +218,9 @@ for i in range(initialframe, endframe+1):
                     toi_current = fromi 
 
                     # June 26: also update currentmap?
-                    h1, i1 = dhighestfreq(fromi)
-                    currentmap[i1] =h1
+                    
+                    #i1 = highestfreq1(fromi) #h1,i1 = dhighestfreq(fromi)
+                    #currentmap[i1] = 1 # h1
 
                     # look from prevmap
                     for fi in fromlist:
@@ -249,12 +241,19 @@ for i in range(initialframe, endframe+1):
                                 found2=1
                                 # check: break statement?
                                 # break
+                    if found2==0:
+                        print("found2 is 0")
+                        # set to 2
+                        goforward=2
+                        
 
                         #currentmap[hi_index] = 1 # or look up the value
 
                     continue
 
                 if goforward==2: # trajcount3
+                    i1 = highestfreq1(fromi)
+                    currentmap[i1] =1
                     
                     for fi in fromlist:
                         get_index = trajcount3.get(fi)
@@ -269,12 +268,36 @@ for i in range(initialframe, endframe+1):
                                 matchfreq[numo] = matchfreq[numo]+1
                                 
                                 found3=1
-
+                    if found3==0:
+                        print("found3 is 0")
+                        goforward=3 # July 6 
+                                
+                # for 0.4 sec
+                if goforward==3:
+                    # also update currentmap?
+                    i1 = highestfreq1(fromi)
+                    currentmap[i1] =1
+                    
+                    for fi in fromlist:
+                        get_index = trajcount4.get(fi)
+                        if get_index!=None:
+                            hi_index = highestfreq4(fromi)
+                            (hx, hy) = dlookupdict[hi_index]
+                            
+                            if hx==xr and hy==yr:
+                                print("0.4 sec next found")
+                                numo = float(obnum)
+                                matchfreq[numo] = matchfreq[numo]+1
+                                
+                                found4=1
+                    if found4==0:
+                        goforward=4
+                            
                 if goforward==4: # trajcount5
-
+                    first5 = 0 # July 8: move from previous location
                     # June 26: also update currentmap?
-                    h1, i1 = dhighestfreq(fromi)
-                    currentmap[i1] =h1
+                    i1 = highestfreq1(fromi)
+                    currentmap[i1] =1 #h1
 
                     # 0.5 second evaluation
                     for fi in fromlist:
@@ -287,6 +310,10 @@ for i in range(initialframe, endframe+1):
                             (hx, hy) = dlookupdict[hi_index]
                             if hx == xr and hy==yr:
                                 print("0.5 sec next found")
+                                
+                                # print
+                                print("hx and hy are", hx, " ", hy)
+                                print("cluster is ", clusterid)
 
                                 numo= float(obnum)
                                 matchfreq[numo] = matchfreq[numo]+1
@@ -296,15 +323,18 @@ for i in range(initialframe, endframe+1):
                                 
                                 found5 = 1
 
-                                # goforward=0 # reset 
+                                goforward=0 # reset 
+                    goforward=0
 
             else:
 
                 # function to find highest freq 
                 #h1, i1 = highest80_sphere(fromi)
-                h1, i1 = dhighestfreq(fromi)
-                #h1, i1 = highest80_quad_norm(fromi)  # highest80_quad_norm or highest80_quad
-                currentmap[i1] = h1
+                list1 = trajcount1.get(fromi) # list of maps
+                if list5 !=None:
+                    i1 = highestfreq1(fromi) #h1, i1 = dhighestfreq(fromi)
+                    #h1, i1 = highest80_quad_norm(fromi)  # highest80_quad_norm or highest80_quad
+                    currentmap[i1] = 1 # h1 
 
                 # pooling
                 """pv = poolmap.get(i1)
@@ -343,9 +373,21 @@ for i in range(initialframe, endframe+1):
             hxvalues = xvalues
             hyvalues = yvalues
             totalmap[ky]= currentmap
+        
+        # check frame 25 
 
         # June 26: check what is the next cluster mapped to after 0.5 sec 
-
+        if i==23:
+            print("prevmap is", prevmap)
+            
+        # July 8 : print out all the found's
+        print("curren frame is:", i)
+        print("found2:", found2)
+        print("found3:", found3)
+        print("found4:", found4)
+        print("found5:", found5)
+        
+        print("first 5 :", first5)
 
         if len(hxvalues) ==0:
             #print("hxvalues is len 0")
@@ -488,7 +530,7 @@ for i in range(initialframe, endframe+1):
                     finaly.append(mcy)
                     angles.append(ang)
                 else:
-                    if ang_diff <= 35 or ang_diff_360 <=35: # change from ang_diff_agg, change from 45 to 30
+                    if ang_diff <= 35: #or ang_diff_360 <=35: # change from ang_diff_agg, change from 45 to 30
                         #print("angle holds")
                         prevmap= totalmap[minclust]
                         avx = mcx
@@ -506,11 +548,12 @@ for i in range(initialframe, endframe+1):
                     else:
                         #print("angles too large, stop unless goforward")
 
-                        if nogoforward ==1:
-                            break
+                        """if nogoforward ==1:
+                            break"""
                         
                         # break if not found
-                        if first5==0 and found5==0:
+                        if first5==0 and found2==0 and found3==0 and found4==0 and found5==0: # only break after found5 is not found
+                            print("all found above are 0")
                             break
                             
                         # June 21, analyze the 2,3, or 5 frames in the future
@@ -525,7 +568,7 @@ for i in range(initialframe, endframe+1):
                             # skip this frame into finalarray
                             finalarray.append(0)
                             
-                            first5 =0 # june 28 : help to break if not found
+                            #first5 =0 # june 28 : help to break if not found
                         
                         
 
@@ -537,10 +580,11 @@ for i in range(initialframe, endframe+1):
             else:
                 print("not found and end unless goforward, after last frame", i)
                 # June 21 analyze 2,3,5 frames in future
-                if nogoforward==1:
-                    break
+                """if nogoforward==1:
+                    break"""
                 
-                if first5==0 and found5==0:
+                if first5==0 and found2==0 and found3==0 and found4==0 and found5==0:
+                    print("all found zero")
                     break
 
                 if goforward==0:
@@ -552,7 +596,7 @@ for i in range(initialframe, endframe+1):
                     # skip this frame into final array
                     finalarray.append(0)
                     
-                    first5 =0 # June 28
+                    #first5 =0 # June 28
                 
                 """if goforward==1:
                     goforward=2"""
@@ -580,6 +624,7 @@ for i in range(initialframe, endframe+1):
 
             finalx.append(avx)
             finaly.append(avy)
+
 
         """if i % 5==0: # June 16 add map5
             #print("(map10) i is", i)
@@ -614,6 +659,10 @@ for i in range(initialframe, initialframe+alen):
 
 
     a = finalarray[acounter]
+    # check if a equals 0 
+    if a==0:
+        acounter = acounter+1
+        continue
     xarray = []
     yarray = []
     with open(name) as csv_file:
@@ -647,3 +696,5 @@ for i in range(initialframe, initialframe+alen):
         break
 
 plt.show()
+
+# June 27 end
