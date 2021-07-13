@@ -6,7 +6,7 @@
 
 initialcluster = 4#1
 initialframe= 20#30
-endframe=120
+endframe=30
 
 xarr =[]
 yarr= []  
@@ -90,8 +90,11 @@ for i in range(initialframe, endframe+1):
         reset_goforward=0
         goforward=0 
 
+    # reset minclust , July 13
+    minclust= 0 
 
     with open(name) as csv_file:
+        
         f =0 
         # reset hxvalues , hyvalues
         hxvalues = []
@@ -390,7 +393,7 @@ for i in range(initialframe, endframe+1):
         print("first 5 :", first5)
 
         if len(hxvalues) ==0:
-            #print("hxvalues is len 0")
+            print("hxvalues is len 0")
             #print("f is ", f, "and matchfreq[numo2] is", matchfreq[numo2], "and numo2 is", numo2)
             foundmin=0
             mindist = thres
@@ -449,6 +452,8 @@ for i in range(initialframe, endframe+1):
                     rad = math.atan2(ydiff, xdiff)
                     ang = math.degrees(rad)
                     # moved here 
+                    print("minclust is (angles empty)", minclust)
+                    
                     finalarray.append(minclust)  
 
                     if ang<0:
@@ -520,7 +525,8 @@ for i in range(initialframe, endframe+1):
                 #print("diff_tot is", diff_tot)
 
                 if diff_tot < 5:
-                    #print("diff tot small, do not chec3k angles")
+                    print("diff tot small < 5, do not chec3k angles")
+                    print("minclust is", minclust)
                     # set the rest of the params
                     prevmap= totalmap[minclust]
                     avx = mcx
@@ -531,7 +537,8 @@ for i in range(initialframe, endframe+1):
                     angles.append(ang)
                 else:
                     if ang_diff <= 35: #or ang_diff_360 <=35: # change from ang_diff_agg, change from 45 to 30
-                        #print("angle holds")
+                        print("angle holds <= 35")
+                        print("minclust is", minclust)
                         prevmap= totalmap[minclust]
                         avx = mcx
                         avy =mcy
@@ -550,11 +557,12 @@ for i in range(initialframe, endframe+1):
 
                         """if nogoforward ==1:
                             break"""
+                        finalarray.append(0)
                         
                         # break if not found
                         if first5==0 and found2==0 and found3==0 and found4==0 and found5==0: # only break after found5 is not found
                             print("all found above are 0")
-                            break
+                            #break
                             
                         # June 21, analyze the 2,3, or 5 frames in the future
                         if goforward==0:
@@ -566,7 +574,7 @@ for i in range(initialframe, endframe+1):
                                 fromlist.append(k)
 
                             # skip this frame into finalarray
-                            finalarray.append(0)
+                            #finalarray.append(0)
                             
                             #first5 =0 # june 28 : help to break if not found
                         
@@ -582,10 +590,10 @@ for i in range(initialframe, endframe+1):
                 # June 21 analyze 2,3,5 frames in future
                 """if nogoforward==1:
                     break"""
-                
+                finalarray.append(0)
                 if first5==0 and found2==0 and found3==0 and found4==0 and found5==0:
                     print("all found zero")
-                    break
+                    #break
 
                 if goforward==0:
                     goforward=1
@@ -594,7 +602,7 @@ for i in range(initialframe, endframe+1):
                         fromlist.append(k)
 
                     # skip this frame into final array
-                    finalarray.append(0)
+                    #finalarray.append(0)
                     
                     #first5 =0 # June 28
                 
@@ -604,6 +612,7 @@ for i in range(initialframe, endframe+1):
                 #break
         if len(hxvalues) !=0:
             print("hxvalues not zero and frame is", i)
+            print("ky is",ky)
             finalarray.append(ky)
             prevmap = totalmap[ky]
 
@@ -624,6 +633,13 @@ for i in range(initialframe, endframe+1):
 
             finalx.append(avx)
             finaly.append(avy)
+        
+        #print 
+        print("finalarray is currently", finalarray)
+        
+        #debug
+        """if i==25:
+            break"""
 
 
         """if i % 5==0: # June 16 add map5
