@@ -134,7 +134,7 @@ for filename in os.listdir('24hrdata'):
                 line_count = line_count+1
                 continue
             # save to map
-            fromi = dinvlookupdict[(pfx4,pfy4)] # TYPO !! T_T
+            fromi = dinvlookupdict[(pfx5,pfy5)] # TYPO !! T_T
             toi = dinvlookupdict[(fx,fy)]
             
             # check if it is in range : exclude outliers dictionary
