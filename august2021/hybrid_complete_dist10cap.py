@@ -1,6 +1,7 @@
 # do not compare angles, cap distance by 10
 # hybrid 2 complete procedure
 # July 29
+# Sept 3 fix bug when i = initialframe
 
 # August 6: timer
 import time
@@ -127,7 +128,7 @@ for initialcluster in range(c1, c2+1):
                             i1 = highestfreq1(fromi) #h1, i1 = dhighestfreq(fromi)
                             #h1, i1 = highest80_quad_norm(fromi)  # highest80_quad_norm or highest80_quad
                             currentmap[i1] = 1
-                        prevmap[i1] = 1
+                            prevmap[i1] = 1
 
                 plt.scatter(arrayx, arrayy)
 
